@@ -1,12 +1,23 @@
 import Head from 'next/head'
-import Image from 'next/image'
+
 import styles from '../styles/Home.module.css'
-import { Box, Button } from '@chakra-ui/react'
+import { Box, Button, Image, Text } from '@chakra-ui/react'
+
 // import { Button } from '@chakra-ui/button'
 export default function Home() {
   return (
-    <Box>
-      <Button mx={10} borderRadius={20}>Foo</Button>
+    <Box backgroundImage='url("/cassete.jpg")' height="100vh" backgroundSize="cover" d="flex" justifyContent='center' alignItems='center' flexDirection='column'>
+
+      <Text fontSize={50}>
+        We bring your music to life
+      </Text>
+      <Button title="Help Meee" />
+
+      <Box>
+
+
+      </Box>
+
     </Box>
   )
 }
