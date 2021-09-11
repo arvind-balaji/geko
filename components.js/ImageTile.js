@@ -14,7 +14,7 @@ const ImageTile = ({ text, image, size = 'xl', ...rest }) => {
         backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        backgroundImage: `url("/${image}")`,
+        backgroundImage: `url("${image}")`,
       })}>
       <Box>
         <Heading size={size}>{text}</Heading>
