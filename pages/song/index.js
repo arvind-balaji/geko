@@ -9,10 +9,11 @@ import {
   IconButton,
   InputGroup,
   Button,
+  Text,
 } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
-
+import Link from 'next/link';
 import ImageTile from '../../components.js/ImageTile';
 import { Layout } from '../../components.js/Layout';
 import { useState } from 'react';
@@ -22,7 +23,7 @@ export const getServerSideProps = async ({ query }) => {
   // use spotify api to search song from query
   const { q } = query;
   const response = await fetch(
-    `https://api.spotify.com/v1/search?q=${query}&type=track`,
+    `https://api.spotify.com/v1/search?q=${q}&type=track&limit=5`,
     {
       headers: {
         Authorization: `Bearer ${process.env.SPOTIFY_TOKEN}`,
@@ -30,18 +31,19 @@ export const getServerSideProps = async ({ query }) => {
     },
   );
   const data = await response.json();
-
+  console.log(q);
   console.log(data);
   return {
     props: {
-      data: data.tracks.items,
+      data: q?.length > 0 ? data.tracks.items : [],
+      _q: q ?? '',
     },
   };
 };
 
-const SearchSong = ({ data }) => {
+const SearchSong = ({ data, _q }) => {
   const router = useRouter();
-  const [q, setQ] = useState();
+  const [q, setQ] = useState(_q);
 
   return (
     <Layout>
@@ -58,18 +60,9 @@ const SearchSong = ({ data }) => {
         <Flex>
           <Heading></Heading>
         </Flex>
-        <Flex my={30} minW="450px">
+        <Flex my={30} w="550px">
           <InputGroup>
-            {/* <InputLeftElement
-              pointerEvents="none"
-              color="gray.300"
-              size="lg"
-              top={1}
-              // fontSize="1.2em"
-              children={<Search2Icon fontSize="xl" />}
-            /> */}
             <Input
-              type="tel"
               placeholder="Search for songs"
               size="lg"
               variant="filled"
@@ -89,19 +82,36 @@ const SearchSong = ({ data }) => {
           </InputGroup>
         </Flex>
         {/* <Flex alignItems="center"><Button }>Foo</Button></Flex> */}
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          w="550px">
+          {data &&
+            data.map((item, index) => (
+              <Link href={`song/${item.id}`} passHref key={item.id}>
+                <Flex
+                  flexDir="column"
+                  key={item.id}
+                  bgColor="white"
+                  boxShadow="sm"
+                  alignSelf="stretch"
+                  borderRadius="md"
+                  mb={2}
+                  p={5}
+                  as="a">
+                  <Heading size="md">{item.name}</Heading>
+                  <Flex justify="space-between" mt={4}>
+                    <Text>{item.album.artists[0].name}</Text>
+                    <Text>{item.album.name}</Text>
+                  </Flex>
+                </Flex>
+              </Link>
+            ))}
+        </Flex>
       </Flex>
-      <Flex
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minW="450px">
-        {data.map((item, index) => (
-          <Flex flexDir="column" key={item.id}>
-            <Heading>{item.name}</Heading>
-          </Flex>
-        ))}
-      </Flex>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       {/* <Flex
         minH="45vh"
         backgroundColor="#434443"
